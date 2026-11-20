@@ -180,6 +180,12 @@ function console_ini($base_url = '127.0.0.1')
 }
 
 describe('opensim-rest-cli', function () {
+    test('tells its version', function () {
+        [$status, $output] = run_cli(['--version']);
+
+        expect($status)->toBe(0)->and($output)->toStartWith('opensim-rest-php ')->not->toEndWith('unknown');
+    });
+
     test('runs one command from an ini file', function () {
         expect(run_cli([console_ini(), 'show', 'info']))->toBe([0, 'Version: OpenSim 0.9.3.0', '']);
     });

@@ -218,6 +218,7 @@ function usage($stream = STDOUT)
           --user USER       console user, with --url
           --wait SECONDS    how long to wait for the console to be ready again after a line (default 5)
           -h, --help        this help
+          -V, --version     the version of opensim-rest-php
 
         Exit code: 0 done, 1 cannot reach or open the console, 2 usage.
 
@@ -298,12 +299,41 @@ function read_arguments($args)
                 $options['mode'] = 'help';
                 break;
 
+            case '-V':
+            case '--version':
+                $options['mode'] = 'version';
+                break;
+
             default:
                 return "unknown argument $arg";
         }
     }
 
     return $options;
+}
+
+/**
+ * The version of this copy: the package that installed it, else its git version in a clone, else the one being worked on.
+ *
+ * @param string $root The folder of the project.
+ * @return string
+ */
+function version($root)
+{
+    if (0 === strpos($root, '/usr/share/opensim-rest-php')) {
+        $version = trim((string) @shell_exec("dpkg-query -W -f='\${Version}' opensim-rest-php 2>/dev/null"));
+        if ('' !== $version) {
+            return $version;
+        }
+    }
+    if (file_exists("$root/.git")) {
+        $version = trim((string) @shell_exec('git -C ' . escapeshellarg($root) . ' describe --tags --always --dirty 2>/dev/null'));
+        if ('' !== $version) {
+            return $version;
+        }
+    }
+
+    return is_file("$root/.version") ? trim((string) file_get_contents("$root/.version")) . ' (development)' : 'unknown';
 }
 
 /**
@@ -332,6 +362,10 @@ if (is_string($options)) {
 }
 if ('help' === $options['mode']) {
     usage();
+    exit(0);
+}
+if ('version' === $options['mode']) {
+    echo 'opensim-rest-php ', version(__DIR__), "\n";
     exit(0);
 }
 if (

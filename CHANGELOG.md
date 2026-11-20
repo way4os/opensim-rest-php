@@ -2,6 +2,7 @@
 
 ### Unreleased
 
+- new: `opensim-rest-cli --version`
 - new (packaging): the copyright file of the package
 
 ### 1.1.3
