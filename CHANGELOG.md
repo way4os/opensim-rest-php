@@ -2,6 +2,8 @@
 
 ### Unreleased
 
+- new (packaging): the copyright file of the package
+
 ### 1.1.3
 
 - update: `dev/` runs [build-tools](https://github.com/magicoli/build-tools) instead of its own copy of the scripts
